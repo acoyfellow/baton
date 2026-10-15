@@ -1,0 +1,4 @@
+node_modules
+evals/runs/*-mock
+.DS_Store
+proof-runs
