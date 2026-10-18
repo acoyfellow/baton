@@ -12,7 +12,7 @@ const shot = await screenshot(page);
 await page.context().close();
 let failed = 0;
 
-for (const model of Object.keys(CLEF_MODELS) as ClefModel[]) {
+const clefProbe = async (model: ClefModel) => {
   const r = await Effect.runPromise(
     Effect.result(
       ask(t, {
@@ -40,9 +40,9 @@ for (const model of Object.keys(CLEF_MODELS) as ClefModel[]) {
     );
     if (a.section?.type === 'choice' && a.section.choice !== 'mail') console.log(`WARN ${model} misread the screen`);
   }
-}
+};
 
-for (const model of ['kimi-k2.6', 'qwen3.8-27b'] as LlmModel[]) {
+const visionProbe = async (model: LlmModel) => {
   const r = await Effect.runPromise(
     Effect.result(
       chat(
@@ -65,7 +65,7 @@ for (const model of ['kimi-k2.6', 'qwen3.8-27b'] as LlmModel[]) {
     failed++;
     console.log(`FAIL ${model} vision: ${JSON.stringify(r.failure)}`);
   } else console.log(`ok   ${model} vision: ${r.success.text.slice(0, 120).replace(/\n/g, ' ')} (in=${r.success.inputTokens} out=${r.success.outputTokens})`);
-}
+};
 
 const tools = [
   {
@@ -77,27 +77,34 @@ const tools = [
     },
   },
 ];
-const r = await Effect.runPromise(
-  Effect.result(
-    chat(
-      t,
-      'kimi-k2.6',
-      [
-        { role: 'system', content: 'You operate a computer through tools.' },
-        { role: 'user', content: 'Open the Spam folder.' },
-      ],
-      { tools, maxTokens: 1500 },
+const toolsProbe = async () => {
+  const r = await Effect.runPromise(
+    Effect.result(
+      chat(
+        t,
+        'kimi-k2.6',
+        [
+          { role: 'system', content: 'You operate a computer through tools.' },
+          { role: 'user', content: 'Open the Spam folder.' },
+        ],
+        { tools, maxTokens: 1500 },
+      ),
     ),
-  ),
-);
-if (r._tag === 'Failure') {
-  failed++;
-  console.log(`FAIL kimi-k2.6 tools: ${JSON.stringify(r.failure)}`);
-} else
-  console.log(
-    `${r.success.toolCalls.length ? 'ok  ' : 'WARN'} kimi-k2.6 tools: ${JSON.stringify(r.success.toolCalls).slice(0, 200)} text=${r.success.text.slice(0, 80)}`,
   );
+  if (r._tag === 'Failure') {
+    failed++;
+    console.log(`FAIL kimi-k2.6 tools: ${JSON.stringify(r.failure)}`);
+  } else
+    console.log(
+      `${r.success.toolCalls.length ? 'ok  ' : 'WARN'} kimi-k2.6 tools: ${JSON.stringify(r.success.toolCalls).slice(0, 200)} text=${r.success.text.slice(0, 80)}`,
+    );
+};
 
+await Promise.all([
+  ...(Object.keys(CLEF_MODELS) as ClefModel[]).map(clefProbe),
+  ...(['kimi-k2.6', 'qwen3.8-27b'] as LlmModel[]).map(visionProbe),
+  toolsProbe(),
+]);
 await close();
 if (failed) {
   console.log(`probe: ${failed} failures`);

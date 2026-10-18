@@ -303,7 +303,7 @@ const jobs = [...TASKS.map((b) => ({ b, inj: false })), ...TASKS.filter((b) => I
   (j) => !ONLY || ONLY.includes(j.b.id),
 );
 const runs = ARMS.flatMap((arm) => jobs.map((j) => ({ arm, ...j })));
-await pool(runs, Number(process.env.BATON_T4_CONC ?? 4), async ({ arm, b, inj }) => {
+await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm, b, inj }) => {
   const spec: ScreenSpec = { screen: b.screen, seed: b.seed, theme: 'light', density: 'comfortable', accent: 0, inj };
   const page = await open(spec);
   const task = { id: b.id, screen: b.screen, ...b.build(await state(page)) };

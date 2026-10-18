@@ -10,7 +10,7 @@ import { close, jsonl, open, pool, runDir, type ScreenSpec, specKey, specs, tran
 const MODELS = (process.env.BATON_MODELS ?? 'clef,clef-flash,clef-omni').split(',') as ClefModel[];
 const PER_SCREEN = Number(process.env.BATON_T3_PER_SCREEN ?? 4);
 const LIMIT = Number(process.env.BATON_SCREENS ?? 999);
-const CONC = Number(process.env.BATON_CONC ?? 6);
+const CONC = Number(process.env.BATON_CONC ?? 32);
 const out = runDir('t3');
 const t = transport();
 

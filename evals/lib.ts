@@ -60,10 +60,30 @@ export async function open(spec: ScreenSpec): Promise<Page> {
 }
 
 export const MOCK = process.env.BATON_MOCK === '1';
+export function limited(inner: Transport, n: number): Transport {
+  let active = 0;
+  const waiting: (() => void)[] = [];
+  const acquire = () => (active < n ? (active++, Promise.resolve()) : new Promise<void>((resume) => waiting.push(resume)));
+  const release = () => {
+    const resume = waiting.shift();
+    if (resume) resume();
+    else active--;
+  };
+  return async (id, body, signal) => {
+    await acquire();
+    try {
+      return await inner(id, body, signal);
+    } finally {
+      release();
+    }
+  };
+}
+
+export const IN_FLIGHT = Number(process.env.BATON_CONCURRENCY ?? 24);
 export function transport(): Transport {
-  if (MOCK) return mockTransport();
+  if (MOCK) return limited(mockTransport(), IN_FLIGHT);
   const cfg = readConfig();
-  return gatewayTransport({ ...cfg, token: readToken() });
+  return limited(gatewayTransport({ ...cfg, token: readToken() }), IN_FLIGHT);
 }
 
 export function runDir(test: string): string {

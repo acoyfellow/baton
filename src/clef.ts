@@ -63,7 +63,11 @@ export function gatewayTransport(cfg: { accountId: string; gateway: string; toke
     const url = `https://gateway.ai.cloudflare.com/v1/${cfg.accountId}/${cfg.gateway}/workers-ai/${workersAiId}`;
     const res = await fetch(url, {
       method: 'POST',
-      headers: { authorization: `Bearer ${cfg.token}`, 'content-type': 'application/json' },
+      headers: {
+        authorization: `Bearer ${cfg.token}`,
+        'content-type': 'application/json',
+        ...(process.env.BATON_SKIP_CACHE === '1' ? { 'cf-aig-skip-cache': 'true' } : {}),
+      },
       body: JSON.stringify(body),
       signal,
     });

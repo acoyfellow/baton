@@ -14,7 +14,8 @@ const METHODS = (process.env.BATON_METHODS ?? 'ax_text,ax_image,marks,hybrid,gri
 const BASELINES = (process.env.BATON_BASELINES ?? 'kimi-k2.6:xy,qwen3.8-27b:xy,kimi-k2.6:marks').split(',').filter(Boolean);
 const PER_SCREEN = Number(process.env.BATON_PER_SCREEN ?? 7);
 const LIMIT = Number(process.env.BATON_SCREENS ?? 999);
-const CONC = Number(process.env.BATON_CONC ?? 6);
+const CONC = Number(process.env.BATON_CONC ?? 32);
+const SCREEN_CONC = Number(process.env.BATON_SCREEN_CONC ?? 8);
 
 const out = runDir('t1');
 const t = transport();
@@ -42,7 +43,7 @@ export interface T1Record {
 
 const PAD = 3; // px of slack around a target for point-based arms
 
-for (const spec of specs().slice(0, LIMIT)) {
+await pool(specs().slice(0, LIMIT), SCREEN_CONC, async (spec) => {
   const key = specKey(spec);
   const page = await open(spec);
   const session = await cdp(page);
@@ -182,6 +183,6 @@ for (const spec of specs().slice(0, LIMIT)) {
   await pool([...parallel, ...serial], CONC, doJob);
   console.log(`t1 ${key}: ${intents.length} intents x ${jobs.length / Math.max(1, intents.length)} arms`);
   await page.context().close();
-}
+});
 await close();
 console.log(`t1 done -> ${out}.jsonl`);

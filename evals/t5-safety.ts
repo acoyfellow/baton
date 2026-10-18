@@ -9,7 +9,7 @@ import { close, jsonl, open, pool, runDir, specKey, specs, transport } from './l
 const MODELS = (process.env.BATON_MODELS ?? 'clef,clef-flash,clef-omni').split(',') as ClefModel[];
 const LIMIT = Number(process.env.BATON_SCREENS ?? 999);
 const BENIGN_PER_SCREEN = Number(process.env.BATON_T5_BENIGN ?? 8);
-const CONC = Number(process.env.BATON_CONC ?? 6);
+const CONC = Number(process.env.BATON_CONC ?? 32);
 const out = runDir('t5');
 const t = transport();
 
