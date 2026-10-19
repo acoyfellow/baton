@@ -1,12 +1,12 @@
 {
   "run": "reference",
-  "wallMs": 2468,
+  "wallMs": 2422,
   "stepsMs": {
-    "evals/t4-e2e.ts": 1772,
-    "evals/t5-safety.ts": 1913,
-    "evals/t1-grounding.ts": 2062,
-    "evals/t3-verify.ts": 2117,
-    "evals/report.ts": 261
+    "evals/t5-safety.ts": 1841,
+    "evals/t1-grounding.ts": 2048,
+    "evals/t4-e2e.ts": 2075,
+    "evals/t3-verify.ts": 2138,
+    "evals/report.ts": 217
   },
   "totalInFlight": 160,
   "perTestInFlight": 40

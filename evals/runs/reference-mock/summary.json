@@ -173,7 +173,7 @@
       "n": 1,
       "repeats": 2,
       "unusableStepRate": 0,
-      "medianSecondsPerTask": 0.2894445830000001,
+      "medianSecondsPerTask": 0.4800726669999999,
       "usdPerTask": 0.00046175999999999997
     },
     "vision:kimi-k2.6": {
@@ -187,7 +187,7 @@
       "n": 1,
       "repeats": 2,
       "unusableStepRate": 0,
-      "medianSecondsPerTask": 0.587845125,
+      "medianSecondsPerTask": 0.740860083,
       "usdPerTask": 0.004635
     },
     "vision:qwen3.8-27b": {
@@ -201,7 +201,7 @@
       "n": 1,
       "repeats": 2,
       "unusableStepRate": 0,
-      "medianSecondsPerTask": 0.6287421670000001,
+      "medianSecondsPerTask": 0.750703208,
       "usdPerTask": 0.002313
     },
     "baton:kimi-k2.6": {
@@ -215,7 +215,7 @@
       "n": 1,
       "repeats": 2,
       "unusableStepRate": 0,
-      "medianSecondsPerTask": 0.8989533749999999,
+      "medianSecondsPerTask": 1.1606255,
       "usdPerTask": 0.00552704
     }
   },

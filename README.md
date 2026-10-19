@@ -17,7 +17,7 @@
 | `pilot` | Clef alone picks the next action from a list | **20.0/20** | 20, 20, 20 | $0.0014 | 3.6 s |
 | `baton:kimi-k2.6` | kimi plans with text tools; Clef does the looking and clicking | 13.7/20 | 14, 9, 18 | $0.0049 | 22.4 s |
 | `vision:qwen3.8-27b` | qwen reads a screenshot and answers pixel coordinates | 12.0/20 | 12, 12, 12 | $0.0090 | 103.7 s |
-| `vision:kimi-k2.6` | kimi reads a screenshot and answers coordinates | 11.7/20 | 15, 7, 13 | $0.0066 | 13.4 s |
+| `vision:kimi-k2.6` | kimi reads a screenshot and answers coordinates | 11.7/20 | 15, 7, 13 | $0.0065 | 13.4 s |
 <!-- results:end -->
 
 - **pilot finished every task in every repeat**, at about 1/6 the cost of a vision model and 4 to 30 times faster.

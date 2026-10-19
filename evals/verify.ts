@@ -35,7 +35,7 @@ const authors = sh('git log --all --format=%ae').split('\n').filter(Boolean);
 const workEmails = [...new Set(authors.filter((email) => !email.endsWith('@users.noreply.github.com')))];
 record('history has no secrets, ids, home paths or personal emails in content', historyHits.length === 0, historyHits.slice(0, 5).join('; ') || 'clean');
 record('commit authors use a noreply address', workEmails.length === 0, workEmails.join(', ') || 'noreply only');
-const notes = sh('git for-each-ref --format=%(refname) refs/notes').trim();
+const notes = sh("git for-each-ref '--format=%(refname)' refs/notes").trim();
 record('no git notes refs', notes === '', notes || 'none');
 
 const REFERENCE = 'reference-mock';

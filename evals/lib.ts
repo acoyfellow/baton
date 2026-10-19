@@ -1,4 +1,4 @@
-import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type Browser, chromium, type Page } from 'playwright';
@@ -92,6 +92,7 @@ export function runDir(test: string): string {
   process.env.BATON_RUN = id;
   const dir = join(ROOT, 'evals', 'runs', `${id}${MOCK ? '-mock' : ''}`);
   mkdirSync(dir, { recursive: true });
+  rmSync(join(dir, `${test}.jsonl`), { force: true });
   return join(dir, test);
 }
 export const jsonl = (path: string, rec: unknown) => appendFileSync(`${path}.jsonl`, `${JSON.stringify(rec)}\n`);
