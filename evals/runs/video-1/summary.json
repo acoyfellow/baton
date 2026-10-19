@@ -1,0 +1,44 @@
+{
+  "t4": {
+    "pilot": {
+      "successMean": 1,
+      "successMin": 1,
+      "successMax": 1,
+      "successes": [
+        1
+      ],
+      "n": 1,
+      "repeats": 1,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 6.7161800419999995,
+      "usdPerTask": 0.0020340000000000002
+    },
+    "vision:kimi-k2.6": {
+      "successMean": 1,
+      "successMin": 1,
+      "successMax": 1,
+      "successes": [
+        1
+      ],
+      "n": 1,
+      "repeats": 1,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 25.641612541,
+      "usdPerTask": 0.02077445
+    },
+    "vision:qwen3.8-27b": {
+      "successMean": 0,
+      "successMin": 0,
+      "successMax": 0,
+      "successes": [
+        0
+      ],
+      "n": 1,
+      "repeats": 1,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 432.458061583,
+      "usdPerTask": 0.03547805
+    }
+  },
+  "spendUsd": 0.0582865
+}

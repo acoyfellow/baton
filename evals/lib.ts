@@ -50,6 +50,10 @@ export async function close() {
 
 /** Retina-like capture: 1280x800 CSS px at 2x, like a MacBook screen. */
 export const RECORD_DIR = process.env.BATON_RECORD;
+const CLICK_LOG_SCRIPT = `
+window.__batonClicks = window.__batonClicks || [];
+addEventListener('pointerdown', (event) => { window.__batonClicks.push({ at: Date.now(), x: event.clientX, y: event.clientY }); }, true);
+`;
 export async function open(spec: ScreenSpec): Promise<Page> {
   const b = await launch();
   const ctx = await b.newContext({
@@ -57,42 +61,33 @@ export async function open(spec: ScreenSpec): Promise<Page> {
     deviceScaleFactor: RECORD_DIR ? 1 : 2,
     ...(RECORD_DIR ? { recordVideo: { dir: RECORD_DIR, size: VIEWPORT } } : {}),
   });
+  if (RECORD_DIR) await ctx.addInitScript({ content: CLICK_LOG_SCRIPT });
+  const pageCreatedAt = Date.now();
   const page = await ctx.newPage();
+  recordingStart.set(page, pageCreatedAt);
   await page.goto(specUrl(spec));
   if (spec.notoast) await page.addStyleTag({ content: '#toast{display:none!important}' });
   await page.waitForTimeout(50);
   return page;
 }
 
-export async function hud(page: Page, lines: { title: string; status: string; detail?: string; tone?: 'run' | 'pass' | 'fail' }) {
+export type HudEvent = { atMs: number; title: string; status: string; detail?: string; tone?: 'run' | 'pass' | 'fail' };
+const recordingStart = new WeakMap<Page, number>();
+const hudEvents = new WeakMap<Page, HudEvent[]>();
+
+export async function recordingLog(page: Page) {
+  const start = recordingStart.get(page) ?? Date.now();
+  const clicks = (await page
+    .evaluate(() => (window as unknown as { __batonClicks?: { at: number; x: number; y: number }[] }).__batonClicks ?? [])
+    .catch(() => [])) as { at: number; x: number; y: number }[];
+  return { captions: hudEvents.get(page) ?? [], clicks: clicks.map((c) => ({ atMs: c.at - start, x: c.x, y: c.y })) };
+}
+
+export async function hud(page: Page, lines: Omit<HudEvent, 'atMs'>) {
   if (!RECORD_DIR) return;
-  await page
-    .evaluate((l) => {
-      let el = document.getElementById('baton-hud');
-      if (!el) {
-        el = document.createElement('div');
-        el.id = 'baton-hud';
-        el.setAttribute('aria-hidden', 'true');
-        el.style.cssText =
-          'position:fixed;left:16px;bottom:16px;z-index:2147483647;pointer-events:none;max-width:760px;padding:14px 18px;border-radius:12px;background:rgba(9,9,11,.92);color:#fafafa;font:15px/1.45 ui-monospace,Menlo,monospace;box-shadow:0 8px 30px rgba(0,0,0,.35)';
-        document.body.appendChild(el);
-      }
-      const color = l.tone === 'pass' ? '#4ade80' : l.tone === 'fail' ? '#f87171' : '#fbad41';
-      el.innerHTML = '';
-      const title = document.createElement('div');
-      title.textContent = l.title;
-      title.style.cssText = `font-weight:700;color:${color};font-size:17px`;
-      const status = document.createElement('div');
-      status.textContent = l.status;
-      el.append(title, status);
-      if (l.detail) {
-        const detail = document.createElement('div');
-        detail.textContent = l.detail;
-        detail.style.cssText = 'color:#a1a1aa;margin-top:4px';
-        el.append(detail);
-      }
-    }, lines)
-    .catch(() => {});
+  const events = hudEvents.get(page) ?? [];
+  events.push({ atMs: Date.now() - (recordingStart.get(page) ?? Date.now()), ...lines });
+  hudEvents.set(page, events);
 }
 
 export const MOCK = process.env.BATON_MOCK === '1';

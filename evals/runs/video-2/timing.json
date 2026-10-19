@@ -1,0 +1,11 @@
+{
+  "run": "video-2",
+  "wallMs": 304771,
+  "stepsMs": {
+    "evals/probe.ts": 90877,
+    "evals/t4-e2e.ts": 213604,
+    "evals/report.ts": 228
+  },
+  "totalInFlight": 160,
+  "perTestInFlight": 160
+}

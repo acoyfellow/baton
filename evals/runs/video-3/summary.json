@@ -1,0 +1,31 @@
+{
+  "t4": {
+    "pilot": {
+      "successMean": 1,
+      "successMin": 1,
+      "successMax": 1,
+      "successes": [
+        1
+      ],
+      "n": 1,
+      "repeats": 1,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 6.744164125,
+      "usdPerTask": 0.0027976800000000003
+    },
+    "vision:kimi-k2.6": {
+      "successMean": 0,
+      "successMin": 0,
+      "successMax": 0,
+      "successes": [
+        0
+      ],
+      "n": 1,
+      "repeats": 1,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 84.13186608299999,
+      "usdPerTask": 0.0242556
+    }
+  },
+  "spendUsd": 0.02705328
+}

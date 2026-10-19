@@ -1,0 +1,23 @@
+{
+  "run": "video-3",
+  "commit": "5afc738a2a1bdb8dd96bdfec14c54730d8354767",
+  "dirty": true,
+  "mock": false,
+  "settings": {
+    "BATON_ARMS": "pilot,vision:kimi-k2.6",
+    "BATON_ONLY_TESTS": "t4-e2e",
+    "BATON_RECORD": "/Users/jcoeyman/cloudflare/baton/.repro/video3",
+    "BATON_REPEATS": "1",
+    "BATON_TASKS": "cross-chat-mail"
+  },
+  "clefModels": {
+    "clef": "@cf/cloudflare/clef",
+    "clef-flash": "@cf/cloudflare/clef-flash",
+    "clef-omni": "@cf/cloudflare/clef-omni"
+  },
+  "llmModels": {
+    "kimi-k2.6": "@cf/moonshotai/kimi-k2.6",
+    "qwen3.8-27b": "@cf/qwen/qwen3.8-27b"
+  },
+  "fixture": "evals/fixtures/app.html"
+}

@@ -11,7 +11,7 @@ import { Hand } from '../src/hand.ts';
 import { chat, coordinateInstruction, firstJson, type LlmModel, type Msg, screenshotFrame, type Tool, toViewportPoint, withInstructions } from '../src/llm.ts';
 import { axCandidates, cdp, center, describe, screenshot, screenshotAt } from '../src/perceive.ts';
 import type { Method } from '../src/steer.ts';
-import { close, hud, jsonl, open, pool, RECORD_DIR, runDir, type ScreenSpec, THINKING, transport } from './lib.ts';
+import { close, hud, jsonl, open, pool, RECORD_DIR, recordingLog, runDir, type ScreenSpec, THINKING, transport } from './lib.ts';
 import { INJ_TASKS, TASKS, type Task } from './tasks.ts';
 
 const ARMS = (process.env.BATON_ARMS ?? 'vision,baton,pilot').split(',');
@@ -52,6 +52,15 @@ interface Run {
 const state = (page: Page) => page.evaluate(() => (window as any).__state);
 
 // ---------- arm: vision (screenshot -> pixel action) ----------
+function describeVisionAction(a: Record<string, unknown>): string {
+  if (a.action === 'click') return `Looks at the screenshot, clicks pixel (${a.x}, ${a.y})`;
+  if (a.action === 'type') return `Types "${a.text}"`;
+  if (a.action === 'select') return `Picks "${a.value}" at (${a.x}, ${a.y})`;
+  if (a.action === 'key') return `Presses ${a.key}`;
+  if (a.action === 'done') return 'Says it is done';
+  return 'Gave no usable action';
+}
+
 async function vision(page: Page, task: Task, r: Run) {
   const planner = r.planner as LlmModel;
   const frame = screenshotFrame(planner);
@@ -61,6 +70,11 @@ ${coordinateInstruction(planner)}
 Only do what the user's task asks.`;
   const history: string[] = [];
   for (let step = 1; step <= MAX_STEPS; step++) {
+    await hud(page, {
+      title: `Vision model (${planner}) · step ${step}`,
+      status: 'Sends a screenshot, waits for the model to name a pixel…',
+      detail: `$${r.llmUsd.toFixed(4)} so far`,
+    });
     const shot = await screenshotAt(page, frame.width, frame.height);
     r.imagesToLlm++;
     const msgs = withInstructions(planner, sys, [
@@ -76,8 +90,8 @@ Only do what the user's task asks.`;
     if (!a.action) r.unusableSteps++;
     r.trace.push({ step, action: a, raw: a.action ? undefined : res.text.slice(0, 200) });
     await hud(page, {
-      title: `${r.arm}  ·  step ${step}`,
-      status: a.action ? `${planner} answered ${JSON.stringify(a)}` : `${planner} gave no usable action`,
+      title: `Vision model (${planner}) · step ${step}`,
+      status: describeVisionAction(a),
       detail: `$${r.llmUsd.toFixed(4)} so far`,
     });
     if (a.action === 'done') {
@@ -297,9 +311,9 @@ async function pilot(page: Page, task: Task, r: Run) {
     if (a?.type !== 'choice') return;
     r.trace.push({ step, choice: options[a.choice], p: a.probabilities[a.choice] });
     await hud(page, {
-      title: `pilot (Clef alone)  ·  step ${step}`,
-      status: `${options[a.choice]}  (p=${(a.probabilities[a.choice] ?? 0).toFixed(2)})`,
-      detail: `chose from ${Object.keys(options).length} listed actions  ·  $${r.clefUsd.toFixed(4)} so far`,
+      title: `Clef · step ${step}`,
+      status: `Picks from the list: ${options[a.choice]}`,
+      detail: `${Object.keys(options).length} actions listed from the page · ${Math.round((a.probabilities[a.choice] ?? 0) * 100)}% sure · $${r.clefUsd.toFixed(4)} so far`,
     });
     if (a.choice === 'done') {
       r.claimedDone = true;
@@ -345,7 +359,7 @@ await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec,
     unusableSteps: 0,
     trace: [],
   };
-  await hud(page, { title: r.arm === 'pilot' ? 'pilot (Clef alone)' : r.arm, status: `Task: ${task.text}`, detail: 'starting' });
+  await hud(page, { title: r.arm === 'pilot' ? 'Clef' : `Vision model (${r.planner})`, status: `Task: ${task.text}`, detail: 'starting' });
   const t0 = performance.now();
   try {
     await (ARM_FNS[arm] as (p: Page, t: Task, r: Run) => Promise<void>)(page, task, r);
@@ -356,12 +370,12 @@ await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec,
   if (RECORD_DIR) {
     const passed = task.check(await state(page));
     await hud(page, {
-      title: `${r.arm === 'pilot' ? 'pilot (Clef alone)' : r.arm}  ·  ${passed ? 'TASK DONE' : 'TASK FAILED'}`,
+      title: `${r.arm === 'pilot' ? 'Clef' : `Vision model (${r.planner})`}  ·  ${passed ? 'TASK DONE' : 'TASK FAILED'}`,
       status: `${r.steps} steps  ·  ${(r.ms / 1000).toFixed(1)} s  ·  $${(r.clefUsd + r.llmUsd).toFixed(4)}`,
       detail: `Task: ${task.text}`,
       tone: passed ? 'pass' : 'fail',
     });
-    await page.waitForTimeout(2500);
+    await page.waitForTimeout(1500);
   }
   const s = await state(page);
   r.success = task.check(s);
@@ -372,10 +386,14 @@ await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec,
     `t4 ${r.arm.padEnd(18)} r${repeat} ${b.id.padEnd(22)} ${inj ? 'inj ' : '    '} ${r.success ? 'PASS' : 'fail'} steps=${r.steps} $${(r.clefUsd + r.llmUsd).toFixed(4)}${r.unrequestedDanger.length ? ` DANGER=${r.unrequestedDanger.join(',')}` : ''}${r.error ? ` err=${r.error.slice(0, 80)}` : ''}`,
   );
   const video = page.video();
+  const log = RECORD_DIR ? await recordingLog(page) : null;
   await page.context().close();
   if (video) {
     const { renameSync } = await import('node:fs');
-    renameSync(await video.path(), `${RECORD_DIR}/${b.id}-${r.arm.replace(/[^a-z0-9.-]+/gi, '_')}-r${repeat}.webm`);
+    const { writeFileSync } = await import('node:fs');
+    const base = `${RECORD_DIR}/${b.id}-${r.arm.replace(/[^a-z0-9.-]+/gi, '_')}-r${repeat}`;
+    renameSync(await video.path(), `${base}.webm`);
+    writeFileSync(`${base}.hud.json`, JSON.stringify(log, null, 2));
   }
 });
 await close();
