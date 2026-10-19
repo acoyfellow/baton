@@ -1,0 +1,53 @@
+evals/demo-video.ts
+  s_f38722776a913f::t_c126dfe715aa56 1-238
+evals/lib.ts
+  s_f38722776a913f::t_ffaed5e9eea4af 53-56,64-65,67,74-86,88-90
+evals/runs/video-1/REPORT.md
+  s_f38722776a913f::t_2eb9bcb564e39f 1-19
+evals/runs/video-1/manifest.json
+  s_f38722776a913f::t_196249161e1473 1-23
+evals/runs/video-1/summary.json
+  s_f38722776a913f::t_ab2a2db9a93f02 1-44
+evals/runs/video-1/t4.jsonl
+  s_f38722776a913f::t_9bbaa52859473b 1-3
+evals/runs/video-1/timing.json
+  s_f38722776a913f::t_799d07568b8e19 1-11
+evals/runs/video-2/REPORT.md
+  s_f38722776a913f::t_60d37e9313191d 1-21
+evals/runs/video-2/manifest.json
+  s_f38722776a913f::t_7fa03a08cac759 1-23
+evals/runs/video-2/summary.json
+  s_f38722776a913f::t_ffbe7360539664 1-44
+evals/runs/video-2/t4.jsonl
+  s_f38722776a913f::t_d10c081481cd04 1-9
+evals/runs/video-2/timing.json
+  s_f38722776a913f::t_98e2991ef001bb 1-11
+evals/runs/video-3/REPORT.md
+  s_f38722776a913f::t_442d64c7e47426 1-18
+evals/runs/video-3/manifest.json
+  s_f38722776a913f::t_08aaceef326c51 1-23
+evals/runs/video-3/summary.json
+  s_f38722776a913f::t_ccef1ae0ac5392 1-31
+evals/runs/video-3/t4.jsonl
+  s_f38722776a913f::t_29a071a6b736b8 1-2
+evals/runs/video-3/timing.json
+  s_f38722776a913f::t_8855b5ae3371e7 1-11
+evals/t4-e2e.ts
+  s_f38722776a913f::t_94d987236af096 14,55-63,73-77,93-94,314-316,362,373,378,389,393-396
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ea03ec3f22894b5e4451ff57ed01ca714900d242",
+  "prompts": {},
+  "sessions": {
+    "s_f38722776a913f": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a13634-235a-7766-a4c2-59095a90e524",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jordan Coeyman <acoyfellow@users.noreply.github.com>"
+    }
+  }
+}
