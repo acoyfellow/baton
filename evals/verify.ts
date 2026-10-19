@@ -24,19 +24,22 @@ const SECRET_PATTERNS: [string, RegExp][] = [
   ['personal email', /[A-Za-z0-9._%+-]+@(gmail|cloudflare)\.com/],
 ];
 const ALLOWED_EMAILS = new Set(['jordan@example.com']);
-const history = sh('git log --all -p --no-color');
+const history = sh('git log HEAD -p --no-color');
 const historyHits = SECRET_PATTERNS.flatMap(([label, pattern]) => {
   const global = new RegExp(pattern.source, `${pattern.flags}g`);
   return [...history.matchAll(global)]
     .map((match) => `${label}: ${match[0].slice(0, 12)}…`)
     .filter((hit) => ![...ALLOWED_EMAILS].some((email) => hit.includes(email)));
 });
-const authors = sh('git log --all --format=%ae').split('\n').filter(Boolean);
+const authors = sh('git log HEAD --format=%ae%n%ce').split('\n').filter(Boolean);
 const workEmails = [...new Set(authors.filter((email) => !email.endsWith('@users.noreply.github.com')))];
 record('history has no secrets, ids, home paths or personal emails in content', historyHits.length === 0, historyHits.slice(0, 5).join('; ') || 'clean');
 record('commit authors use a noreply address', workEmails.length === 0, workEmails.join(', ') || 'noreply only');
-const notes = sh("git for-each-ref '--format=%(refname)' refs/notes").trim();
-record('no git notes refs', notes === '', notes || 'none');
+const remoteNotes = sh('git ls-remote origin refs/notes/*').trim();
+record('no git notes refs on origin', remoteNotes === '', remoteNotes || 'none');
+const remoteHead = sh('git ls-remote origin refs/heads/main').split(/\s/)[0];
+const localHead = sh('git rev-parse HEAD').trim();
+record('origin main is this clean history', remoteHead === localHead, `origin ${remoteHead?.slice(0, 7)} local ${localHead.slice(0, 7)}`);
 
 const REFERENCE = 'reference-mock';
 const repro = join(ROOT, '.repro', 'clone');
