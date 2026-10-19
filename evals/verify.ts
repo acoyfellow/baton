@@ -71,6 +71,8 @@ if (summary && manifest) {
     manifest.mock === false && manifest.dirty === false,
     `mock=${manifest.mock} dirty=${manifest.dirty} commit=${manifest.commit}`,
   );
+  const manifestCommitInHistory = spawnSync('git', ['merge-base', '--is-ancestor', manifest.commit, 'HEAD'], { cwd: ROOT }).status === 0;
+  record('bench manifest commit is in the published history', manifestCommitInHistory, manifest.commit);
   record(
     'every arm has 3 or more repeats',
     arms.length > 0 && arms.every(([, arm]) => arm.repeats >= 3),
