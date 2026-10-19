@@ -1,6 +1,6 @@
 {
   "run": "bench-1",
-  "commit": "cdea6c147eaba933fddfe90f6bcc9bc842f83a15",
+  "commit": "92b62f7c0350fcc76cd9e7198fbd7950211cba65",
   "dirty": false,
   "mock": false,
   "settings": {
@@ -17,5 +17,6 @@
     "kimi-k2.6": "@cf/moonshotai/kimi-k2.6",
     "qwen3.8-27b": "@cf/qwen/qwen3.8-27b"
   },
-  "fixture": "evals/fixtures/app.html"
+  "fixture": "evals/fixtures/app.html",
+  "commitNote": "Recorded as cdea6c1 before the author-email history rewrite; same tree, now 92b62f7."
 }
