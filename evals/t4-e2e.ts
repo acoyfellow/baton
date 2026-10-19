@@ -11,7 +11,7 @@ import { Hand } from '../src/hand.ts';
 import { chat, coordinateInstruction, firstJson, type LlmModel, type Msg, screenshotFrame, type Tool, toViewportPoint, withInstructions } from '../src/llm.ts';
 import { axCandidates, cdp, center, describe, screenshot, screenshotAt } from '../src/perceive.ts';
 import type { Method } from '../src/steer.ts';
-import { close, jsonl, open, pool, runDir, type ScreenSpec, THINKING, transport } from './lib.ts';
+import { close, hud, jsonl, open, pool, RECORD_DIR, runDir, type ScreenSpec, THINKING, transport } from './lib.ts';
 import { INJ_TASKS, TASKS, type Task } from './tasks.ts';
 
 const ARMS = (process.env.BATON_ARMS ?? 'vision,baton,pilot').split(',');
@@ -75,6 +75,11 @@ Only do what the user's task asks.`;
     const a = firstJson(res.text) ?? {};
     if (!a.action) r.unusableSteps++;
     r.trace.push({ step, action: a, raw: a.action ? undefined : res.text.slice(0, 200) });
+    await hud(page, {
+      title: `${r.arm}  ·  step ${step}`,
+      status: a.action ? `${planner} answered ${JSON.stringify(a)}` : `${planner} gave no usable action`,
+      detail: `$${r.llmUsd.toFixed(4)} so far`,
+    });
     if (a.action === 'done') {
       r.claimedDone = true;
       return;
@@ -291,6 +296,11 @@ async function pilot(page: Page, task: Task, r: Run) {
     const a = res.answers.next;
     if (a?.type !== 'choice') return;
     r.trace.push({ step, choice: options[a.choice], p: a.probabilities[a.choice] });
+    await hud(page, {
+      title: `pilot (Clef alone)  ·  step ${step}`,
+      status: `${options[a.choice]}  (p=${(a.probabilities[a.choice] ?? 0).toFixed(2)})`,
+      detail: `chose from ${Object.keys(options).length} listed actions  ·  $${r.clefUsd.toFixed(4)} so far`,
+    });
     if (a.choice === 'done') {
       r.claimedDone = true;
       return;
@@ -335,6 +345,7 @@ await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec,
     unusableSteps: 0,
     trace: [],
   };
+  await hud(page, { title: r.arm === 'pilot' ? 'pilot (Clef alone)' : r.arm, status: `Task: ${task.text}`, detail: 'starting' });
   const t0 = performance.now();
   try {
     await (ARM_FNS[arm] as (p: Page, t: Task, r: Run) => Promise<void>)(page, task, r);
@@ -342,6 +353,16 @@ await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec,
     r.error = String((e as Error).message).slice(0, 300);
   }
   r.ms = performance.now() - t0;
+  if (RECORD_DIR) {
+    const passed = task.check(await state(page));
+    await hud(page, {
+      title: `${r.arm === 'pilot' ? 'pilot (Clef alone)' : r.arm}  ·  ${passed ? 'TASK DONE' : 'TASK FAILED'}`,
+      status: `${r.steps} steps  ·  ${(r.ms / 1000).toFixed(1)} s  ·  $${(r.clefUsd + r.llmUsd).toFixed(4)}`,
+      detail: `Task: ${task.text}`,
+      tone: passed ? 'pass' : 'fail',
+    });
+    await page.waitForTimeout(2500);
+  }
   const s = await state(page);
   r.success = task.check(s);
   r.danger = [...s.danger, ...(s.settings.deleted ? ['account-deleted'] : [])];
@@ -350,7 +371,12 @@ await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec,
   console.log(
     `t4 ${r.arm.padEnd(18)} r${repeat} ${b.id.padEnd(22)} ${inj ? 'inj ' : '    '} ${r.success ? 'PASS' : 'fail'} steps=${r.steps} $${(r.clefUsd + r.llmUsd).toFixed(4)}${r.unrequestedDanger.length ? ` DANGER=${r.unrequestedDanger.join(',')}` : ''}${r.error ? ` err=${r.error.slice(0, 80)}` : ''}`,
   );
+  const video = page.video();
   await page.context().close();
+  if (video) {
+    const { renameSync } = await import('node:fs');
+    renameSync(await video.path(), `${RECORD_DIR}/${b.id}-${r.arm.replace(/[^a-z0-9.-]+/gi, '_')}-r${repeat}.webm`);
+  }
 });
 await close();
 console.log(`t4 done -> ${out}.jsonl`);
