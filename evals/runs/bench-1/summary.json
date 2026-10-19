@@ -1,0 +1,227 @@
+{
+  "t1": {
+    "clef-omni/ax_image": 1,
+    "clef-omni/hybrid": 1,
+    "clef/hybrid": 1,
+    "clef/ax_image": 1,
+    "clef-flash/hybrid": 1,
+    "clef-flash/ax_image": 1,
+    "qwen3.8-27b/xy": 0.9935897435897436,
+    "clef/ax_text": 0.967948717948718,
+    "clef-omni/ax_text": 0.9551282051282052,
+    "clef-flash/ax_text": 0.9487179487179487,
+    "clef/marks": 0.8910256410256411,
+    "clef-flash/marks": 0.7692307692307693,
+    "kimi-k2.6/xy": 0.7628205128205128,
+    "clef-omni/marks": 0.7371794871794872,
+    "kimi-k2.6/marks": 0.7307692307692307,
+    "clef-flash/grid": 0.34615384615384615,
+    "clef/grid": 0.30128205128205127,
+    "clef-omni/grid": 0.16666666666666666
+  },
+  "t2": {
+    "clef-omni/ax_text": {
+      "ece": 0.17001282051282046,
+      "auc": 0.7497603068072867,
+      "tau98": 0.81,
+      "cover98": 0.4230769230769231
+    },
+    "clef-omni/ax_image": {
+      "ece": 0.20659487179487185,
+      "auc": null,
+      "tau98": 0,
+      "cover98": 1
+    },
+    "clef/ax_text": {
+      "ece": 0.09903205128205123,
+      "auc": 0.990728476821192,
+      "tau98": 0.42,
+      "cover98": 0.9807692307692307
+    },
+    "clef-omni/hybrid": {
+      "ece": 0.21243589743589752,
+      "auc": null,
+      "tau98": 0,
+      "cover98": 1
+    },
+    "clef/marks": {
+      "ece": 0.0739474358974357,
+      "auc": 0.7653406686415574,
+      "tau98": 0.95,
+      "cover98": 0.3269230769230769
+    },
+    "clef/hybrid": {
+      "ece": 0.03930128205128233,
+      "auc": null,
+      "tau98": 0,
+      "cover98": 1
+    },
+    "clef-omni/marks": {
+      "ece": 0.16458717948717946,
+      "auc": 0.810710498409332,
+      "tau98": 0.69,
+      "cover98": 0.3717948717948718
+    },
+    "clef/ax_image": {
+      "ece": 0.051858333333333784,
+      "auc": null,
+      "tau98": 0,
+      "cover98": 1
+    },
+    "clef-flash/ax_text": {
+      "ece": 0.09899551282051278,
+      "auc": 0.9831081081081081,
+      "tau98": 0.54,
+      "cover98": 0.9358974358974359
+    },
+    "clef-flash/marks": {
+      "ece": 0.08927948717948712,
+      "auc": 0.812962962962963,
+      "tau98": 0.87,
+      "cover98": 0.3333333333333333
+    },
+    "clef-flash/hybrid": {
+      "ece": 0.09208141025641056,
+      "auc": null,
+      "tau98": 0,
+      "cover98": 1
+    },
+    "clef-flash/ax_image": {
+      "ece": 0.14028846153846145,
+      "auc": null,
+      "tau98": 0,
+      "cover98": 1
+    },
+    "clef/grid": {
+      "ece": 0.09559488435740385,
+      "auc": 0.7928947882100332,
+      "tau98": 0.62,
+      "cover98": 0.02564102564102564
+    },
+    "clef-omni/grid": {
+      "ece": 0.10711063633515384,
+      "auc": 0.9029585798816568,
+      "tau98": 0.31,
+      "cover98": 0.04487179487179487
+    },
+    "clef-flash/grid": {
+      "ece": 0.19826282904596154,
+      "auc": 0.7982933914306464,
+      "tau98": 0.53,
+      "cover98": 0.057692307692307696
+    }
+  },
+  "t3": {
+    "clef-flash|after_only|hidden": {
+      "auc": 0.8293155278066828,
+      "acc": 0.8315412186379928
+    },
+    "clef-flash|after_only|shown": {
+      "auc": 0.8798416001849925,
+      "acc": 0.8566308243727598
+    },
+    "clef-flash|before_after|hidden": {
+      "auc": 0.8953925309284311,
+      "acc": 0.8745519713261649
+    },
+    "clef-flash|before_after|shown": {
+      "auc": 0.9493583073187651,
+      "acc": 0.910394265232975
+    },
+    "clef-omni|after_only|hidden": {
+      "auc": 0.8254133425829576,
+      "acc": 0.8351254480286738
+    },
+    "clef-omni|after_only|shown": {
+      "auc": 0.9096138281882299,
+      "acc": 0.8709677419354839
+    },
+    "clef-omni|before_after|hidden": {
+      "auc": 0.9100763093999307,
+      "acc": 0.8458781362007168
+    },
+    "clef-omni|before_after|shown": {
+      "auc": 0.9764423632789918,
+      "acc": 0.8709677419354839
+    },
+    "clef|after_only|hidden": {
+      "auc": 0.943143716036536,
+      "acc": 0.8924731182795699
+    },
+    "clef|after_only|shown": {
+      "auc": 0.9552549427679501,
+      "acc": 0.8673835125448028
+    },
+    "clef|before_after|hidden": {
+      "auc": 0.9895074575095387,
+      "acc": 0.953405017921147
+    },
+    "clef|before_after|shown": {
+      "auc": 0.9790727251705399,
+      "acc": 0.9032258064516129
+    }
+  },
+  "t4": {
+    "vision:qwen3.8-27b": {
+      "successMean": 12,
+      "successMin": 12,
+      "successMax": 12,
+      "successes": [
+        12,
+        12,
+        12
+      ],
+      "n": 20,
+      "repeats": 3,
+      "unusableStepRate": 0.006980802792321117,
+      "medianSecondsPerTask": 103.67528750000001,
+      "usdPerTask": 0.009015279166666666
+    },
+    "vision:kimi-k2.6": {
+      "successMean": 11.666666666666666,
+      "successMin": 7,
+      "successMax": 15,
+      "successes": [
+        15,
+        7,
+        13
+      ],
+      "n": 20,
+      "repeats": 3,
+      "unusableStepRate": 0.003968253968253968,
+      "medianSecondsPerTask": 13.377877125,
+      "usdPerTask": 0.006546385833333333
+    },
+    "baton:kimi-k2.6": {
+      "successMean": 13.666666666666666,
+      "successMin": 9,
+      "successMax": 18,
+      "successes": [
+        14,
+        9,
+        18
+      ],
+      "n": 20,
+      "repeats": 3,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 22.428363125,
+      "usdPerTask": 0.004944529666666668
+    },
+    "pilot": {
+      "successMean": 20,
+      "successMin": 20,
+      "successMax": 20,
+      "successes": [
+        20,
+        20,
+        20
+      ],
+      "n": 20,
+      "repeats": 3,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 3.6446377500000233,
+      "usdPerTask": 0.0014119439999999998
+    }
+  },
+  "spendUsd": 3.7347467720000456
+}

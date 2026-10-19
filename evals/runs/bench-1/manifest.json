@@ -1,0 +1,21 @@
+{
+  "run": "bench-1",
+  "commit": "cdea6c147eaba933fddfe90f6bcc9bc842f83a15",
+  "dirty": false,
+  "mock": false,
+  "settings": {
+    "BATON_ARMS": "vision:kimi-k2.6,vision:qwen3.8-27b,baton:kimi-k2.6,pilot",
+    "BATON_REPEATS": "3",
+    "BATON_SKIP_CACHE": "1"
+  },
+  "clefModels": {
+    "clef": "@cf/cloudflare/clef",
+    "clef-flash": "@cf/cloudflare/clef-flash",
+    "clef-omni": "@cf/cloudflare/clef-omni"
+  },
+  "llmModels": {
+    "kimi-k2.6": "@cf/moonshotai/kimi-k2.6",
+    "qwen3.8-27b": "@cf/qwen/qwen3.8-27b"
+  },
+  "fixture": "evals/fixtures/app.html"
+}
