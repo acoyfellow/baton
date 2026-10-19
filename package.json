@@ -19,7 +19,10 @@
     "t5": "bun evals/t5-safety.ts",
     "evals": "bun evals/run-all.ts",
     "report": "bun evals/report.ts",
-    "smoke": "bun evals/smoke.ts"
+    "smoke": "bun evals/smoke.ts",
+    "bench": "BATON_REPEATS=${BATON_REPEATS:-3} BATON_ARMS=${BATON_ARMS:-vision:kimi-k2.6,vision:qwen3.8-27b,baton:kimi-k2.6,pilot} BATON_SKIP_CACHE=${BATON_SKIP_CACHE:-1} bun evals/run-all.ts",
+    "bench:mock": "BATON_MOCK=1 BATON_RUN=reference BATON_SCREENS=2 BATON_PER_SCREEN=2 BATON_T3_PER_SCREEN=1 BATON_TASKS=mail-archive BATON_REPEATS=2 BATON_ARMS=vision:kimi-k2.6,vision:qwen3.8-27b,baton:kimi-k2.6,pilot bun evals/run-all.ts",
+    "bench:verify": "bun evals/verify.ts"
   },
   "dependencies": {
     "effect": "4.0.0",

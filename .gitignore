@@ -1,4 +1,6 @@
 node_modules
-evals/runs/*-mock
 .DS_Store
 proof-runs
+evals/runs/*-mock
+!evals/runs/reference-mock
+.repro

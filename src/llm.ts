@@ -4,10 +4,61 @@ import { Data, Effect, Schedule } from 'effect';
 import type { Transport } from './clef.ts';
 
 export const LLM_MODELS = {
-  'kimi-k2.6': { workersAiId: '@cf/moonshotai/kimi-k2.6', usdIn: 0.95, usdOut: 4.0 },
-  'qwen3.8-27b': { workersAiId: '@cf/qwen/qwen3.8-27b', usdIn: 0.45, usdOut: 3.2 },
+  'kimi-k2.6': {
+    workersAiId: '@cf/moonshotai/kimi-k2.6',
+    usdIn: 0.95,
+    usdOut: 4.0,
+    thinkingOff: { chat_template_kwargs: { thinking: false } },
+    coordinates: 'normalized1000',
+    frame: { width: 1280, height: 800 },
+    systemRole: true,
+  },
+  'qwen3.8-27b': {
+    workersAiId: '@cf/qwen/qwen3.8-27b',
+    usdIn: 0.45,
+    usdOut: 3.2,
+    thinkingOff: {},
+    coordinates: 'pixels',
+    frame: { width: 1280, height: 800 },
+    systemRole: false,
+  },
 } as const;
 export type LlmModel = keyof typeof LLM_MODELS;
+export type CoordinateSystem = 'pixels' | 'normalized1000';
+
+export interface Viewport {
+  width: number;
+  height: number;
+}
+
+export function withInstructions(model: LlmModel, instructions: string, user: Part[]): Msg[] {
+  return LLM_MODELS[model].systemRole
+    ? [
+        { role: 'system', content: instructions },
+        { role: 'user', content: user },
+      ]
+    : [{ role: 'user', content: [{ type: 'text', text: instructions }, ...user] }];
+}
+
+export const screenshotFrame = (model: LlmModel): Viewport => LLM_MODELS[model].frame;
+
+export function coordinateInstruction(model: LlmModel): string {
+  const frame = screenshotFrame(model);
+  return LLM_MODELS[model].coordinates === 'normalized1000'
+    ? 'x and y are normalized to 0-1000 on both axes (0,0 is the top left corner, 1000,1000 the bottom right).'
+    : `The screenshot is ${frame.width}x${frame.height} pixels; x and y are pixels in it (0,0 is the top left corner).`;
+}
+
+export function toViewportPoint(model: LlmModel, viewport: Viewport, x: unknown, y: unknown): { x: number; y: number } {
+  const rawX = Number(x);
+  const rawY = Number(y);
+  if (LLM_MODELS[model].coordinates === 'normalized1000') {
+    const scale = rawX <= 1 && rawY <= 1 ? 1 : 1000;
+    return { x: (rawX * viewport.width) / scale, y: (rawY * viewport.height) / scale };
+  }
+  const frame = screenshotFrame(model);
+  return { x: (rawX * viewport.width) / frame.width, y: (rawY * viewport.height) / frame.height };
+}
 
 export class LlmError extends Data.TaggedError('LlmError')<{ readonly status: number; readonly reason: string }> {}
 
@@ -61,10 +112,10 @@ export function chat(
   transport: Transport,
   model: LlmModel,
   messages: Msg[],
-  opts: { tools?: Tool[]; maxTokens?: number; json?: boolean } = {},
+  opts: { tools?: Tool[]; maxTokens?: number; json?: boolean; thinking?: boolean } = {},
 ): Effect.Effect<LlmResult, LlmError> {
   const m = LLM_MODELS[model];
-  const body: Record<string, unknown> = { messages, max_tokens: opts.maxTokens ?? 800, temperature: 0 };
+  const body: Record<string, unknown> = { messages, max_tokens: opts.maxTokens ?? 800, temperature: 0, ...(opts.thinking === false ? m.thinkingOff : {}) };
   if (opts.tools) body.tools = opts.tools;
   if (opts.json) body.response_format = { type: 'json_object' };
   const once = Effect.gen(function* () {

@@ -127,6 +127,25 @@ export async function screenshot(page: Page, clip?: Box, quality = 80): Promise<
   return `data:image/jpeg;base64,${buf.toString('base64')}`;
 }
 
+export async function screenshotAt(page: Page, width: number, height: number): Promise<string> {
+  const full = await screenshot(page);
+  const size = page.viewportSize();
+  if (size && size.width === width && size.height === height) return full;
+  return page.evaluate(
+    async ({ data, w, h }) => {
+      const image = new Image();
+      image.src = data;
+      await image.decode();
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d')?.drawImage(image, 0, 0, w, h);
+      return canvas.toDataURL('image/jpeg', 0.8);
+    },
+    { data: full, w: width, h: height },
+  );
+}
+
 /** Draw numbered marks over candidates, capture, remove. Labels are 1..N. */
 export async function marked(page: Page, cands: Candidate[]): Promise<string> {
   await page.evaluate(

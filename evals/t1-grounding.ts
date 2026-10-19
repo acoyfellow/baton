@@ -3,11 +3,11 @@
 //       baselines: kimi-k2.6 and qwen3.8-27b answer pixel coordinates; kimi also picks a mark.
 import { Effect } from 'effect';
 import type { ClefModel } from '../src/clef.ts';
-import { chat, firstJson, type LlmModel } from '../src/llm.ts';
-import { axCandidates, type Candidate, cdp, groundTruthId, inside, marked, playwrightScreen, screenshot } from '../src/perceive.ts';
+import { chat, coordinateInstruction, firstJson, type LlmModel, screenshotFrame, toViewportPoint } from '../src/llm.ts';
+import { axCandidates, type Candidate, cdp, groundTruthId, inside, marked, playwrightScreen, screenshot, screenshotAt } from '../src/perceive.ts';
 import { type Method, pickTarget } from '../src/steer.ts';
 import { type Intent, intentsFor } from './intents.ts';
-import { close, jsonl, MOCK, open, pool, runDir, specKey, specs, transport } from './lib.ts';
+import { close, jsonl, MOCK, open, pool, runDir, specKey, specs, THINKING, transport } from './lib.ts';
 
 const MODELS = (process.env.BATON_MODELS ?? 'clef,clef-flash,clef-omni').split(',') as ClefModel[];
 const METHODS = (process.env.BATON_METHODS ?? 'ax_text,ax_image,marks,hybrid,grid').split(',') as Method[];
@@ -131,10 +131,11 @@ await pool(specs().slice(0, LIMIT), SCREEN_CONC, async (spec) => {
           ms: pick.ms,
         });
       }
-      const image = j.mode === 'xy' ? shot : marks;
+      const frame = screenshotFrame(j.model);
+      const image = j.mode === 'xy' ? await screenshotAt(page, frame.width, frame.height) : marks;
       const prompt =
         j.mode === 'xy'
-          ? `You are operating a computer. The screenshot is 1280x800 pixels. Task: "${j.it.intent}". Reply with only JSON {"x": <int>, "y": <int>} giving the pixel to click.`
+          ? `You are operating a computer. Task: "${j.it.intent}". Reply with only JSON {"x": <int>, "y": <int>} giving the point to click. ${coordinateInstruction(j.model)}`
           : `You are operating a computer. Clickable controls in the screenshot have pink outlines with numbers. Task: "${j.it.intent}". Reply with only JSON {"mark": <int>} for the box to click.`;
       const r = await Effect.runPromise(
         chat(
@@ -149,14 +150,14 @@ await pool(specs().slice(0, LIMIT), SCREEN_CONC, async (spec) => {
               ],
             },
           ],
-          { maxTokens: 1500 },
+          { maxTokens: 1500, thinking: THINKING },
         ),
       );
       const js = firstJson(r.text) ?? {};
       let correct = false;
       let chosenTarget: string | null = null;
       if (j.mode === 'xy') {
-        const pt = { x: Number(js.x), y: Number(js.y) };
+        const pt = toViewportPoint(j.model, { width: 1280, height: 800 }, js.x, js.y);
         correct = Number.isFinite(pt.x) && inside(pt, j.it.box, PAD);
         if (MOCK) correct = false;
       } else {

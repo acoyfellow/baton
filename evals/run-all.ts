@@ -1,5 +1,7 @@
-import { spawn, spawnSync } from 'node:child_process';
+import { execSync, spawn, spawnSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
+import { CLEF_MODELS } from '../src/clef.ts';
+import { LLM_MODELS } from '../src/llm.ts';
 
 const id = process.env.BATON_RUN ?? new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 const mock = process.env.BATON_MOCK === '1';
@@ -46,6 +48,23 @@ if (codes.some((code) => code !== 0)) {
 }
 runSync('evals/report.ts');
 const dir = `evals/runs/${id}${mock ? '-mock' : ''}`;
+const git = (args: string) => execSync(`git ${args}`, { encoding: 'utf8' }).trim();
+const settings = Object.fromEntries(
+  Object.entries(env)
+    .filter(([key]) => key.startsWith('BATON_') && key !== 'BATON_RUN' && key !== 'BATON_CONCURRENCY')
+    .sort(),
+);
+const manifest = {
+  run: id,
+  commit: git('rev-parse HEAD'),
+  dirty: git('status --porcelain -- src evals/*.ts evals/fixtures package.json bun.lock') !== '',
+  mock,
+  settings,
+  clefModels: Object.fromEntries(Object.entries(CLEF_MODELS).map(([name, model]) => [name, model.workersAiId])),
+  llmModels: Object.fromEntries(Object.entries(LLM_MODELS).map(([name, model]) => [name, model.workersAiId])),
+  fixture: 'evals/fixtures/app.html',
+};
+writeFileSync(`${dir}/manifest.json`, `${JSON.stringify(manifest, null, 2)}\n`);
 writeFileSync(
   `${dir}/timing.json`,
   `${JSON.stringify({ run: id, wallMs: Math.round(performance.now() - startedAt), stepsMs: timings, totalInFlight, perTestInFlight: Number(env.BATON_CONCURRENCY) }, null, 2)}\n`,

@@ -1,0 +1,223 @@
+{
+  "t1": {
+    "clef/ax_text": 0.5,
+    "clef/ax_image": 0.5,
+    "clef/hybrid": 0.5,
+    "clef-flash/ax_text": 0.5,
+    "clef-flash/ax_image": 0.5,
+    "clef-flash/hybrid": 0.5,
+    "clef-omni/ax_text": 0.5,
+    "clef-omni/ax_image": 0.5,
+    "clef-omni/hybrid": 0.5,
+    "clef/marks": 0,
+    "clef-flash/marks": 0,
+    "clef-omni/marks": 0,
+    "kimi-k2.6/marks": 0,
+    "kimi-k2.6/xy": 0,
+    "qwen3.8-27b/xy": 0,
+    "clef/grid": 0,
+    "clef-flash/grid": 0,
+    "clef-omni/grid": 0
+  },
+  "t2": {
+    "clef/ax_text": {
+      "ece": 0.5183295941755779,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef/ax_image": {
+      "ece": 0.5193995254188549,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef/marks": {
+      "ece": 0.01923076923076923,
+      "auc": null,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef/hybrid": {
+      "ece": 0.519399525418855,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-flash/ax_text": {
+      "ece": 0.5183295941755779,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-flash/ax_image": {
+      "ece": 0.5193995254188549,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-flash/marks": {
+      "ece": 0.01923076923076923,
+      "auc": null,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-flash/hybrid": {
+      "ece": 0.519399525418855,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-omni/ax_text": {
+      "ece": 0.5183295941755779,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-omni/ax_image": {
+      "ece": 0.5193995254188549,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-omni/marks": {
+      "ece": 0.01923076923076923,
+      "auc": null,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-omni/hybrid": {
+      "ece": 0.519399525418855,
+      "auc": 0,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef/grid": {
+      "ece": 0.00024414062500000016,
+      "auc": null,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-flash/grid": {
+      "ece": 0.00024414062500000016,
+      "auc": null,
+      "tau98": null,
+      "cover98": 0
+    },
+    "clef-omni/grid": {
+      "ece": 0.00024414062500000016,
+      "auc": null,
+      "tau98": null,
+      "cover98": 0
+    }
+  },
+  "t3": {
+    "clef-flash|after_only|hidden": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-flash|after_only|shown": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-flash|before_after|hidden": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-flash|before_after|shown": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-omni|after_only|hidden": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-omni|after_only|shown": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-omni|before_after|hidden": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef-omni|before_after|shown": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef|after_only|hidden": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef|after_only|shown": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef|before_after|hidden": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    },
+    "clef|before_after|shown": {
+      "auc": 0.5,
+      "acc": 0.6666666666666666
+    }
+  },
+  "t4": {
+    "pilot": {
+      "successMean": 0,
+      "successMin": 0,
+      "successMax": 0,
+      "successes": [
+        0,
+        0
+      ],
+      "n": 1,
+      "repeats": 2,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 0.2894445830000001,
+      "usdPerTask": 0.00046175999999999997
+    },
+    "vision:kimi-k2.6": {
+      "successMean": 0,
+      "successMin": 0,
+      "successMax": 0,
+      "successes": [
+        0,
+        0
+      ],
+      "n": 1,
+      "repeats": 2,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 0.587845125,
+      "usdPerTask": 0.004635
+    },
+    "vision:qwen3.8-27b": {
+      "successMean": 0,
+      "successMin": 0,
+      "successMax": 0,
+      "successes": [
+        0,
+        0
+      ],
+      "n": 1,
+      "repeats": 2,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 0.6287421670000001,
+      "usdPerTask": 0.002313
+    },
+    "baton:kimi-k2.6": {
+      "successMean": 0,
+      "successMin": 0,
+      "successMax": 0,
+      "successes": [
+        0,
+        0
+      ],
+      "n": 1,
+      "repeats": 2,
+      "unusableStepRate": 0,
+      "medianSecondsPerTask": 0.8989533749999999,
+      "usdPerTask": 0.00552704
+    }
+  },
+  "spendUsd": 0.14480985600000024
+}

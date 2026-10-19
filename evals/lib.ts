@@ -60,6 +60,7 @@ export async function open(spec: ScreenSpec): Promise<Page> {
 }
 
 export const MOCK = process.env.BATON_MOCK === '1';
+export const THINKING = process.env.BATON_THINKING === '1';
 export function limited(inner: Transport, n: number): Transport {
   let active = 0;
   const waiting: (() => void)[] = [];

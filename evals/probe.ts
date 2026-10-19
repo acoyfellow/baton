@@ -4,7 +4,7 @@ import { Effect } from 'effect';
 import { ask, CLEF_MODELS, type ClefModel } from '../src/clef.ts';
 import { chat, type LlmModel } from '../src/llm.ts';
 import { screenshot } from '../src/perceive.ts';
-import { close, open, transport } from './lib.ts';
+import { close, open, THINKING, transport } from './lib.ts';
 
 const t = transport();
 const page = await open({ screen: 'mail', seed: 11, theme: 'light', density: 'comfortable', accent: 0 });
@@ -57,7 +57,7 @@ const visionProbe = async (model: LlmModel) => {
             ],
           },
         ],
-        { maxTokens: 1500 },
+        { maxTokens: 1500, thinking: THINKING },
       ),
     ),
   );
@@ -87,7 +87,7 @@ const toolsProbe = async () => {
           { role: 'system', content: 'You operate a computer through tools.' },
           { role: 'user', content: 'Open the Spam folder.' },
         ],
-        { tools, maxTokens: 1500 },
+        { tools, maxTokens: 1500, thinking: THINKING },
       ),
     ),
   );
