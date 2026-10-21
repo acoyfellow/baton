@@ -14,13 +14,13 @@ import type { Method } from '../src/steer.ts';
 import { close, hud, jsonl, open, pool, RECORD_DIR, recordingLog, runDir, type ScreenSpec, THINKING, transport } from './lib.ts';
 import { INJ_TASKS, TASKS, type Task } from './tasks.ts';
 
-const ARMS = (process.env.BATON_ARMS ?? 'vision,baton,pilot').split(',');
-const REPEATS = Number(process.env.BATON_REPEATS ?? 1);
-const PLANNER = (process.env.BATON_PLANNER ?? 'kimi-k2.6') as LlmModel;
-const MODEL = (process.env.BATON_T4_MODEL ?? 'clef') as ClefModel;
-const METHOD = (process.env.BATON_T4_METHOD ?? 'hybrid') as Method;
-const TAU = Number(process.env.BATON_TAU ?? 0.5);
-const ONLY = process.env.BATON_TASKS?.split(',');
+const ARMS = (process.env.DO_ARMS ?? 'vision,baton,pilot').split(',');
+const REPEATS = Number(process.env.DO_REPEATS ?? 1);
+const PLANNER = (process.env.DO_PLANNER ?? 'kimi-k2.6') as LlmModel;
+const MODEL = (process.env.DO_T4_MODEL ?? 'clef') as ClefModel;
+const METHOD = (process.env.DO_T4_METHOD ?? 'hybrid') as Method;
+const TAU = Number(process.env.DO_TAU ?? 0.5);
+const ONLY = process.env.DO_TASKS?.split(',');
 const MAX_STEPS = 15;
 const VIEW = { width: 1280, height: 800 };
 const out = runDir('t4');
@@ -333,7 +333,7 @@ const jobs = [...TASKS.map((b) => ({ b, inj: false })), ...TASKS.filter((b) => I
   (j) => !ONLY || ONLY.includes(j.b.id),
 );
 const runs = Array.from({ length: REPEATS }, (_, repeat) => ARMS.flatMap((arm) => jobs.map((j) => ({ arm, repeat, ...j })))).flat();
-await pool(runs, Number(process.env.BATON_T4_CONC ?? 40), async ({ arm: armSpec, repeat, b, inj }) => {
+await pool(runs, Number(process.env.DO_T4_CONC ?? 40), async ({ arm: armSpec, repeat, b, inj }) => {
   const [arm, planner = PLANNER] = armSpec.split(':') as [string, LlmModel?];
   const spec: ScreenSpec = { screen: b.screen, seed: b.seed, theme: 'light', density: 'comfortable', accent: 0, inj };
   const page = await open(spec);

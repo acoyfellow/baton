@@ -49,10 +49,10 @@ export async function close() {
 }
 
 /** Retina-like capture: 1280x800 CSS px at 2x, like a MacBook screen. */
-export const RECORD_DIR = process.env.BATON_RECORD;
+export const RECORD_DIR = process.env.DO_RECORD;
 const CLICK_LOG_SCRIPT = `
-window.__batonClicks = window.__batonClicks || [];
-addEventListener('pointerdown', (event) => { window.__batonClicks.push({ at: Date.now(), x: event.clientX, y: event.clientY }); }, true);
+window.__doClicks = window.__doClicks || [];
+addEventListener('pointerdown', (event) => { window.__doClicks.push({ at: Date.now(), x: event.clientX, y: event.clientY }); }, true);
 `;
 export async function open(spec: ScreenSpec): Promise<Page> {
   const b = await launch();
@@ -78,7 +78,7 @@ const hudEvents = new WeakMap<Page, HudEvent[]>();
 export async function recordingLog(page: Page) {
   const start = recordingStart.get(page) ?? Date.now();
   const clicks = (await page
-    .evaluate(() => (window as unknown as { __batonClicks?: { at: number; x: number; y: number }[] }).__batonClicks ?? [])
+    .evaluate(() => (window as unknown as { __doClicks?: { at: number; x: number; y: number }[] }).__doClicks ?? [])
     .catch(() => [])) as { at: number; x: number; y: number }[];
   return { captions: hudEvents.get(page) ?? [], clicks: clicks.map((c) => ({ atMs: c.at - start, x: c.x, y: c.y })) };
 }
@@ -90,8 +90,8 @@ export async function hud(page: Page, lines: Omit<HudEvent, 'atMs'>) {
   hudEvents.set(page, events);
 }
 
-export const MOCK = process.env.BATON_MOCK === '1';
-export const THINKING = process.env.BATON_THINKING === '1';
+export const MOCK = process.env.DO_MOCK === '1';
+export const THINKING = process.env.DO_THINKING === '1';
 export function limited(inner: Transport, n: number): Transport {
   let active = 0;
   const waiting: (() => void)[] = [];
@@ -111,7 +111,7 @@ export function limited(inner: Transport, n: number): Transport {
   };
 }
 
-export const IN_FLIGHT = Number(process.env.BATON_CONCURRENCY ?? 24);
+export const IN_FLIGHT = Number(process.env.DO_CONCURRENCY ?? 24);
 export function transport(): Transport {
   if (MOCK) return limited(mockTransport(), IN_FLIGHT);
   const cfg = readConfig();
@@ -119,8 +119,8 @@ export function transport(): Transport {
 }
 
 export function runDir(test: string): string {
-  const id = process.env.BATON_RUN ?? new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  process.env.BATON_RUN = id;
+  const id = process.env.DO_RUN ?? new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  process.env.DO_RUN = id;
   const dir = join(ROOT, 'evals', 'runs', `${id}${MOCK ? '-mock' : ''}`);
   mkdirSync(dir, { recursive: true });
   rmSync(join(dir, `${test}.jsonl`), { force: true });

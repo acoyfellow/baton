@@ -4,7 +4,7 @@ Both dry runs use the parallel run-all. Prompts, tasks, scoring and thresholds a
 
 ## Dry run A: mock
 
-Command: `BATON_MOCK=1 BATON_SCREENS=2 BATON_PER_SCREEN=2 BATON_T3_PER_SCREEN=1 BATON_TASKS=mail-archive bun run evals`
+Command: `DO_MOCK=1 DO_SCREENS=2 DO_PER_SCREEN=2 DO_T3_PER_SCREEN=1 DO_TASKS=mail-archive bun run evals`
 
 Baseline: `evals/runs/2026-10-15T09-17-51-mock` (serial run-all, same settings).
 
@@ -17,7 +17,7 @@ Predictions:
 
 ## Dry run B: small real
 
-Command: `BATON_SCREENS=2 BATON_PER_SCREEN=2 BATON_T3_PER_SCREEN=1 BATON_TASKS=mail-archive bun run evals`
+Command: `DO_SCREENS=2 DO_PER_SCREEN=2 DO_T3_PER_SCREEN=1 DO_TASKS=mail-archive bun run evals`
 
 Predictions:
 1. Probe passes; exit 0; REPORT.md, summary.json, timing.json exist.

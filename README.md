@@ -1,10 +1,10 @@
-# baton
+# do
 
 > Don't let a model guess pixels. List what can be clicked, and let a small model choose.
 
 **Problem:** computer-use agents today send a screenshot to a large vision model and ask it where to click. Each step is slow and expensive, and a wrong guess means a wrong click.
 
-**Idea:** the page already knows what can be clicked. baton lists those controls in code, asks [Clef](https://developers.cloudflare.com/workers-ai/models/clef/) (Cloudflare's small decision model) to pick one with a probability, clicks it in code, and asks Clef to check the result. Clef never guesses coordinates. It chooses from a list.
+**Idea:** the page already knows what can be clicked. do lists those controls in code, asks [Clef](https://developers.cloudflare.com/workers-ai/models/clef/) (Cloudflare's small decision model) to pick one with a probability, clicks it in code, and asks Clef to check the result. Clef never guesses coordinates. It chooses from a list.
 
 ## Results
 
@@ -36,7 +36,7 @@ page ──► code lists controls (accessibility tree) ──► Clef: "which o
 
 1. **Perceive:** code reads the accessibility tree and the screenshot. No model.
 2. **Choose:** Clef answers a typed question, for example "which control archives the email from Dana Kim?", over the listed controls, and returns a probability for each.
-3. **Gate:** below a confidence threshold, or on a control Clef rates as destructive, baton refuses and asks.
+3. **Gate:** below a confidence threshold, or on a control Clef rates as destructive, do refuses and asks.
 4. **Act:** code clicks the chosen control's exact center.
 5. **Verify:** Clef compares the before and after screens and says whether the step worked.
 

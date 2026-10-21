@@ -46,7 +46,7 @@ if (import.meta.main) {
       file: 'intro.png',
       width: 1920,
       height: 1080,
-      html: `<div class="title"><h1>baton</h1><p>Don't let a model guess pixels.</p><p class="amber">List what can be clicked, and let a small model choose.</p></div>`,
+      html: `<div class="title"><h1>do</h1><p>Don't let a model guess pixels.</p><p class="amber">List what can be clicked, and let a small model choose.</p></div>`,
     },
     {
       file: 'outro.png',
@@ -56,11 +56,11 @@ if (import.meta.main) {
         <table>
           <tr><th style="color:#a1a1aa">arm</th><th>finished</th><th>cost / task</th><th>median time</th></tr>
           <tr class="win"><td>Clef alone (pilot)</td><td>20.0 / 20</td><td>$0.0014</td><td>3.6 s</td></tr>
-          <tr><td>LLM plans + Clef clicks (baton)</td><td>13.7 / 20</td><td>$0.0049</td><td>22.4 s</td></tr>
+          <tr><td>LLM plans + Clef clicks</td><td>13.7 / 20</td><td>$0.0049</td><td>22.4 s</td></tr>
           <tr><td>vision · qwen3.8-27b</td><td>12.0 / 20</td><td>$0.0090</td><td>103.7 s</td></tr>
           <tr><td>vision · kimi-k2.6</td><td>11.7 / 20</td><td>$0.0065</td><td>13.4 s</td></tr>
         </table>
-        <p class="muted" style="margin-top:36px">Reproduce it: github.com/acoyfellow/baton</p></div>`,
+        <p class="muted" style="margin-top:36px">Reproduce it: github.com/acoyfellow/do</p></div>`,
     },
   ]);
 }

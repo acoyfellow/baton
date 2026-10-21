@@ -6,12 +6,12 @@ import { auc, mean, pct, quantile, ROOT } from './lib.ts';
 const runs = join(ROOT, 'evals', 'runs');
 const dir = process.argv[2]
   ? join(runs, process.argv[2])
-  : process.env.BATON_RUN
-    ? join(runs, `${process.env.BATON_RUN}${process.env.BATON_MOCK === '1' ? '-mock' : ''}`)
+  : process.env.DO_RUN
+    ? join(runs, `${process.env.DO_RUN}${process.env.DO_MOCK === '1' ? '-mock' : ''}`)
     : join(
         runs,
         readdirSync(runs)
-          .filter((d) => !d.endsWith('-mock') || process.env.BATON_MOCK === '1')
+          .filter((d) => !d.endsWith('-mock') || process.env.DO_MOCK === '1')
           .sort()
           .at(-1) as string,
       );
@@ -25,7 +25,7 @@ const load = (n: string): any[] =>
     : [];
 const group = <T>(xs: T[], k: (x: T) => string) => xs.reduce((m, x) => m.set(k(x), [...(m.get(k(x)) ?? []), x]), new Map<string, T[]>());
 const usd = (x: number) => (x < 0.01 ? `$${x.toFixed(5)}` : `$${x.toFixed(3)}`);
-const lines: string[] = [`# baton eval report`, '', `Run: \`${dir.split('/').at(-1)}\``, ''];
+const lines: string[] = [`# do eval report`, '', `Run: \`${dir.split('/').at(-1)}\``, ''];
 const summary: Record<string, unknown> = {};
 
 // ---------- T1 ----------

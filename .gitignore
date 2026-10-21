@@ -4,3 +4,4 @@ proof-runs
 evals/runs/*-mock
 !evals/runs/reference-mock
 .repro
+evals/runs/video-*

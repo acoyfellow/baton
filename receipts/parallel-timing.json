@@ -25,7 +25,7 @@
   },
   "speedup": 6.71,
   "smallRunSameSettings": {
-    "settings": "BATON_SCREENS=2 BATON_PER_SCREEN=2 BATON_T3_PER_SCREEN=1 BATON_TASKS=mail-archive, cache skipped",
+    "settings": "DO_SCREENS=2 DO_PER_SCREEN=2 DO_T3_PER_SCREEN=1 DO_TASKS=mail-archive, cache skipped",
     "serialSeconds": 279,
     "parallelSeconds": 140
   },

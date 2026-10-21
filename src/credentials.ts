@@ -22,9 +22,9 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): GatewayConfig 
   } catch {
     file = {};
   }
-  const accountId = env.BATON_ACCOUNT_ID ?? env.ODDS_ACCOUNT_ID ?? file.accountId;
-  const gateway = env.BATON_GATEWAY ?? env.ODDS_GATEWAY ?? file.gateway ?? 'default';
-  if (!accountId) throw new Error(`Set accountId in ${CONFIG_FILE} or BATON_ACCOUNT_ID`);
+  const accountId = env.DO_ACCOUNT_ID ?? env.ODDS_ACCOUNT_ID ?? file.accountId;
+  const gateway = env.DO_GATEWAY ?? env.ODDS_GATEWAY ?? file.gateway ?? 'default';
+  if (!accountId) throw new Error(`Set accountId in ${CONFIG_FILE} or DO_ACCOUNT_ID`);
   return { accountId, gateway };
 }
 
@@ -53,7 +53,7 @@ function fromFile(): string | undefined {
 }
 
 export function readToken(env: NodeJS.ProcessEnv = process.env): string {
-  const token = env.BATON_TOKEN?.trim() || env.ODDS_TOKEN?.trim() || fromKeychain() || fromFile();
+  const token = env.DO_TOKEN?.trim() || env.ODDS_TOKEN?.trim() || fromKeychain() || fromFile();
   if (!token) {
     throw new Error(`No gateway token. Store one with: security add-generic-password -a "$USER" -s ${KEYCHAIN_SERVICE} -w`);
   }
